@@ -16,9 +16,6 @@ pixel_pitch = 3.8 # mm
 width = pixel_pitch*128
 height = pixel_pitch*80
 
-#two_digit_xy = lambda x: (((x-111)%10), 15-((x-111)//10))
-#two_digit_xy = lambda x: (15-((x-111)//10), ((x-111)%10))
-#two_digit_xy = lambda x: (((x-111)//10), 9-((x-111)%10))
 two_digit_xy = lambda x: (((x-11)//10), 9-((x-11)%10))
 
 print(len(chip_ids),'chip ids')
