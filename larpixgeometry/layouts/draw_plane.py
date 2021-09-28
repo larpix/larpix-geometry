@@ -3,7 +3,7 @@ Generate a PDF of a pixel plane YAML file.
 
 '''
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.units import inch, cm
 import yaml
 from larpixgeometry.pixelplane import PixelPlane
@@ -30,13 +30,25 @@ width_orig = dimensions['width']
 height_orig = dimensions['height']
 
 colors = np.array([[228, 26, 28], [55, 126, 184], [77, 175, 74], [152,
-    78, 163], [255, 127, 0]])/256.0
+    78, 163], [255, 127, 0],[0, 255, 229]])/256.0
 colors = np.tile(colors, (100,1))
 print('colors',len(colors))
 
+makelandscape = False
+if version.startswith('3.'):
+    makelandscape = True;
 
-canvas_width, canvas_height = letter
-c = canvas.Canvas('layout-' + version + '-' + sidename + 'side.pdf', pagesize=letter)
+if makelandscape:
+    canvas_width, canvas_height = landscape(letter)
+else:
+    canvas_width, canvas_height = letter
+
+#c = canvas.Canvas('layout-' + version + '-' + sidename + 'side.pdf', pagesize=letter)
+if makelandscape:
+    c = canvas.Canvas('layout-' + version + '-' + sidename + 'side.pdf', pagesize=landscape(letter))
+else:
+    c = canvas.Canvas('layout-' + version + '-' + sidename + 'side.pdf', pagesize=letter)
+
 
 margin = 1*inch
 page_center_x = canvas_width/2
@@ -72,9 +84,9 @@ minor_font = 3
 major_font = 20
 
 c.setFont('Helvetica', major_font)
-c.drawString(3*inch, 10*inch, 'Layout %s (%d chips)' % (version,
+c.drawString(canvas_width/3., canvas_height*0.92, 'Layout %s (%d chips)' % (version,
     len(pixelplane.chips)))
-c.drawString(3*inch, 9.6*inch, '(view from %s side)' % sidename)
+c.drawString(canvas_width/3., canvas_height*0.87, '(view from %s side)' % sidename)
 c.setFont('Courier', minor_font)
 colorkey = []
 for pixel in pixelplane.pixels.values():
