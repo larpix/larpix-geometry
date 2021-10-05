@@ -8,7 +8,7 @@ import patterngenerator as pg
 
 pixels = []
 subgrid_width = 16
-chip_ids = list(range(11,171))
+chip_ids = list(range(10,170))
 
 print(chip_ids)
 print('chips',len(chip_ids))
@@ -16,7 +16,7 @@ pixel_pitch = 3.8 # mm
 width = pixel_pitch*128
 height = pixel_pitch*80
 
-two_digit_xy = lambda x: (((x-11)//10), 9-((x-11)%10))
+two_digit_xy = lambda x: (((x-10)//10), 9-((x-10)%10))
 
 print(len(chip_ids),'chip ids')
 
@@ -33,7 +33,6 @@ for chip_idx, chip in enumerate(chip_ids):
     # Bool value is argument to right_side_up
     chip_pixels = list(range(chip_idx*64, chip_idx*64 + 64))
     pixelids[chip] = (True, 'plain', chip_pixels)
-    #pixelids[chip] = (False, 'plain', chip_pixels)
 
 chips = []
 for chipid, (right_side_up, shape, ids) in pixelids.items():
