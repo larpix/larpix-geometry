@@ -163,6 +163,7 @@ grid_7x7_assignments_0_64_v2_2_1 = [
     None,   None,   40, 39, 48,  47,  46,      45,
     ]
 '''
+
 Assignments list maps channel to geometrical position in 7x7 grid.
 
 I.e. assigments[2] gives the location of channel 2, where the locations
@@ -183,6 +184,22 @@ are numbered according to the following grid::
 14  15  16  17  18  19  20
 7   8   9   10  11  12  13
 0   1   2   3   4   5   6
+'''
+
+grid_8x8_assignments_0_64_v2_0 = [
+        60, 52, 61, 62, 63, 55, 53, 54,
+        45, 46, 44, 47, 37, 38, 36, 39,
+        28, 30, 29, 31, 20, 23, 21, 22,
+        13, 14, 15,  7,  6,  5, 12,  4,
+         3, 11,  2,  1,  0,  8,  9, 10,
+        18, 17, 19, 16, 27, 25, 26, 24,
+        35, 32, 34, 33, 43, 40, 42, 41,
+        50, 49, 48, 56, 57, 58, 51, 59]
+
+'''
+Assignments list maps channel to geometrical position in 8x8 grid.
+
+I.e. assigments[2] gives the location of channel 2
 '''
 
 
