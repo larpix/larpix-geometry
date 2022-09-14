@@ -1,4 +1,5 @@
-# xy and z
+# load a run config file with efield
+
 import numpy as np
 
 def get_data_packets(packets):
