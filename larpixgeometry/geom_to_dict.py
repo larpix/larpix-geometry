@@ -1,14 +1,19 @@
+import os
+import shutil
+import fire
 import yaml
-import json
+import pickle
+import numpy as np
 from collections import defaultdict
 
 def rotate_pixel(pixel_pos, tile_orientation):
     return pixel_pos[0]*tile_orientation[2], pixel_pos[1]*tile_orientation[1]
 
-def multi_layout_to_dict(yaml_path, json_path):
+def multi_layout_to_dict(geom_repo, geom_name):
 
-    with open(yaml_path) as gf:
-        geometry_yaml = yaml.load(gf, Loader=yaml.FullLoader)
+    yaml_path = os.path.join(geom_repo, geom_name + ".yaml")
+    with open(yaml_path) as infile:
+        geometry_yaml = yaml.load(infile, Loader=yaml.FullLoader)
 
     pixel_pitch = geometry_yaml['pixel_pitch']
     chip_channel_to_position = geometry_yaml['chip_channel_to_position']
@@ -16,16 +21,12 @@ def multi_layout_to_dict(yaml_path, json_path):
     tile_positions = geometry_yaml['tile_positions']
     tpc_centers = geometry_yaml['tpc_centers']
     tile_indeces = geometry_yaml['tile_indeces']
-    xs = np.array(list(chip_channel_to_position.values()))[
-        :, 0] * pixel_pitch
-    ys = np.array(list(chip_channel_to_position.values()))[
-        :, 1] * pixel_pitch
+    xs = np.array(list(chip_channel_to_position.values()))[:, 0] * pixel_pitch
+    ys = np.array(list(chip_channel_to_position.values()))[:, 1] * pixel_pitch
     x_size = max(xs) - min(xs) + pixel_pitch
     y_size = max(ys) - min(ys) + pixel_pitch
 
-#    tile_geometry = defaultdict(int)
-    geometry = defaultdict(lambda: (0,0))
-    io_group_io_channel_to_tile = {}
+    geometry = defaultdict(dict)
 
     for tile in geometry_yaml['tile_chip_to_io']:
         tile_orientation = tile_orientations[tile]
@@ -33,7 +34,6 @@ def multi_layout_to_dict(yaml_path, json_path):
             io_group_io_channel = geometry_yaml['tile_chip_to_io'][tile][chip]
             io_group = io_group_io_channel // 1000
             io_channel = io_group_io_channel % 1000
-            self._tile_id[([io_group], [io_channel])] = tile
 
         for chip_channel in geometry_yaml['chip_channel_to_position']:
             chip = chip_channel // 1000
@@ -46,9 +46,9 @@ def multi_layout_to_dict(yaml_path, json_path):
             io_group = io_group_io_channel // 1000
             io_channel = io_group_io_channel % 1000
             x = chip_channel_to_position[chip_channel][0] * \
-                self.pixel_pitch + self.pixel_pitch / 2 - x_size / 2
+                pixel_pitch + pixel_pitch / 2 - x_size / 2
             y = chip_channel_to_position[chip_channel][1] * \
-                self.pixel_pitch + self.pixel_pitch / 2 - y_size / 2
+                pixel_pitch + pixel_pitch / 2 - y_size / 2
 
             x, y = rotate_pixel((x, y), tile_orientation)
             x += tile_positions[tile][2] + \
@@ -62,7 +62,14 @@ def multi_layout_to_dict(yaml_path, json_path):
 
             geometry[(io_group, io_channel, chip, channel)] = np.array([x, y, z, direction])
 
-            
-    with open(json_path, "w") as outfile:
-        json.dump(dict(geometry), outfile)
+    # need to figure out what to do in case one doesn't have writting rights
+    dict_path = os.path.join(geom_repo, "dict_repo")
+    if not os.path.exists(dict_path):
+        os.makedirs(dict_path)
+    geom_dict_pkl_name = os.path.join(dict_path, geom_name + ".pkl")
 
+    with open(geom_dict_pkl_name, 'wb') as outfile:
+        pickle.dump(dict(geometry), outfile, protocol=pickle.HIGHEST_PROTOCOL)
+
+if __name__ == "__main__":
+    fire.Fire(multi_layout_to_dict)
