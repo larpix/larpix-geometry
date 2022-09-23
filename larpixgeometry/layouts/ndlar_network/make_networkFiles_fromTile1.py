@@ -1,8 +1,10 @@
+import os
 import json
 import fire
 
 def make_ndlar_network_files(tile1_network_file):
 
+    assert os.path.exists('ndlar_network_configs')
 
     for tile in range(1,41):
 
