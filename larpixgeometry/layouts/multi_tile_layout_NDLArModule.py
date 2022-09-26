@@ -177,6 +177,45 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles, pixel_pitch=
 
     print("tile_chip_io_channel_io_group: ",tile_chip_io_channel_io_group)
 
+    # Copied from larnd-sim detector properties yaml
+    tpc_centers = [ # cm
+        [-306.3, 5.387, 462.36],
+        [-306.3, 5.387, 563.78],
+        [-306.3, 5.387, 665.2],
+        [-306.3, 5.387, 766.62],
+        [-306.3, 5.387, 868.04],
+        [-204.2, 5.387, 462.36],
+        [-204.2, 5.387, 563.78],
+        [-204.2, 5.387, 665.2],
+        [-204.2, 5.387, 766.62],
+        [-204.2, 5.387, 868.04],
+        [-102.1, 5.387, 462.36],
+        [-102.1, 5.387, 563.78],
+        [-102.1, 5.387, 665.2],
+        [-102.1, 5.387, 766.62],
+        [-102.1, 5.387, 868.04],
+        [0.0, 5.387, 462.36],
+        [0.0, 5.387, 563.78],
+        [0.0, 5.387, 665.2],
+        [0.0, 5.387, 766.62],
+        [0.0, 5.387, 868.04],
+        [102.1, 5.387, 462.36],
+        [102.1, 5.387, 563.78],
+        [102.1, 5.387, 665.2],
+        [102.1, 5.387, 766.62],
+        [102.1, 5.387, 868.04],
+        [204.2, 5.387, 462.36],
+        [204.2, 5.387, 563.78],
+        [204.2, 5.387, 665.2],
+        [204.2, 5.387, 766.62],
+        [204.2, 5.387, 868.04],
+        [306.3, 5.387, 462.36],
+        [306.3, 5.387, 563.78],
+        [306.3, 5.387, 665.2],
+        [306.3, 5.387, 766.62],
+        [306.3, 5.387, 868.04]
+    ]
+
     with open('multi_tile_layout-%s.yaml' % FORMAT_VERSION, 'w') as f:
         yaml.dump({'tile_layout_version': LAYOUT_VERSION,
                    'multitile_layout_version': FORMAT_VERSION,
@@ -185,6 +224,7 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles, pixel_pitch=
                    'tile_orientations': tile_orientations,
                    'tile_chip_to_io': tile_chip_io_channel_io_group,
                    'tile_indeces': tile_indeces,
+                   'tpc_centers': tpc_centers,
                    'chip_channel_to_position': chip_channel}, f)
 
 if __name__ == "__main__":
