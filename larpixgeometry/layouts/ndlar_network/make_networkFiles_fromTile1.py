@@ -23,7 +23,7 @@ def make_ndlar_network_files(tile1_network_file):
             ttnc_json['network'][str(io_group)][str(io_channel)] = ttnc_json['network'][str(io_group)].pop(base_io_chan)
 
         # write the new network configuration file
-        filename = "ndlar_network_configs/network_ndlarmodule_tile"+str(tile)+".json"
+        filename = "network_ndlarmodule_tile"+str(tile)+".json"
         with open(filename, 'w') as outfile:
             json.dump(ttnc_json, outfile, ensure_ascii=False, indent=4)
 
