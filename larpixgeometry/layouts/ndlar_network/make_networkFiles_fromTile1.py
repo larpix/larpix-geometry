@@ -1,8 +1,12 @@
 import json
 import fire
+import os
 
 def make_ndlar_network_files(tile1_network_file):
 
+    network_path_exists = os.path.isdir('ndlar_network_configs')
+    if not network_path_exists:
+        os.makedirs('ndlar_network_configs')
 
     for tile in range(1,41):
 
