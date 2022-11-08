@@ -29,11 +29,11 @@ import fire
 import yaml
 import larpixgeometry.pixelplane
 
-LAYOUT_VERSION = '3.0.0'
-FORMAT_VERSION = '3.3.16'
+LAYOUT_VERSION = '2.5.0'
+FORMAT_VERSION = '2.5.16'
 PIXEL_PITCH = 3.8
 n_tiles=16
-_default_layout_file = 'layout-3.0.0.yaml'
+_default_layout_file = 'layout-2.5.0.yaml'
 
 def generate_layout(tile_layout_file=_default_layout_file, pixel_pitch=PIXEL_PITCH, min_chip_id=11, max_chip_id=110):
     """
@@ -110,21 +110,21 @@ def generate_layout(tile_layout_file=_default_layout_file, pixel_pitch=PIXEL_PIT
                       16: [ 304.31,-465.57, 155.19]}
 
                              # z  y  x
-    tile_orientations = {1:  [ 1,-1, 1],
-                         2:  [ 1, 1,-1],
-                         3:  [ 1,-1, 1],
-                         4:  [ 1, 1,-1],
-                         5:  [ 1,-1, 1],
-                         6:  [ 1, 1,-1],
-                         7:  [ 1,-1, 1],
-                         8:  [ 1, 1,-1],
-                         9:  [-1,-1,-1],
+    tile_orientations = {1:  [ 1, 1, 1],
+                         2:  [ 1, 1, 1],
+                         3:  [ 1, 1, 1],
+                         4:  [ 1, 1, 1],
+                         5:  [ 1, 1, 1],
+                         6:  [ 1, 1, 1],
+                         7:  [ 1, 1, 1],
+                         8:  [ 1, 1, 1],
+                         9:  [-1, 1, 1],
                          10: [-1, 1, 1],
-                         11: [-1,-1,-1],
+                         11: [-1, 1, 1],
                          12: [-1, 1, 1],
-                         13: [-1,-1,-1],
+                         13: [-1, 1, 1],
                          14: [-1, 1, 1],
-                         15: [-1,-1,-1],
+                         15: [-1, 1, 1],
                          16: [-1, 1, 1]}
 
     tile_chip_io_channel_io_group = {it:{} for it in range(1,n_tiles+1)}

@@ -10,7 +10,7 @@ pixels = []
 subgrid_width = 16
 chip_ids = list(range(11,111))
 
-pixel_pitch = 3.87975 # adjustment from Module-0, -1 tile pixel pitch: 4.434 *(7/8)
+pixel_pitch = 3.8 
 width = pixel_pitch*80
 height = pixel_pitch*80
 
