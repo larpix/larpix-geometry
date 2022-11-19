@@ -22,6 +22,7 @@ a multi-tile LArPix anode
     of type integer
 - tile_indeces: dictionary where the key is the tile ID and the value is a tuple in
     the format (module ID, anode ID, tile ID within the anode)
+- tpc_centers: a dictionary of the offset to apply to each tpc
 """
 
 import json
@@ -29,11 +30,14 @@ import fire
 import yaml
 import larpixgeometry.pixelplane
 
-LAYOUT_VERSION = '2.4.0'
-FORMAT_VERSION = '2.3.16'
-PIXEL_PITCH = 4.434
+LAYOUT_VERSION = '2.5.1'
+FORMAT_VERSION = '2.5.16'
+#PIXEL_PITCH = 4.434
+PIXEL_PITCH = 3.8
 
-def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitch=PIXEL_PITCH):
+USE_SINGLE_NETWORK_FILE = False
+
+def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitch=PIXEL_PITCH, single_network_file=USE_SINGLE_NETWORK_FILE):
     """
     Function that generates the multi-layout YAML file.
 
@@ -43,6 +47,7 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitc
             or txt file with a list of JSON files (one per tile)
         n_tiles (int): number of tiles
         pixel_pitch (float): value of pixel pitch, default is PIXEL_PITCH
+        single_network_file (bool): flag to use a single network file for the global configuration (default=False), to use, you also need to specify the number of tiles
     """
 
     with open(tile_layout_file, 'r', encoding='utf-8') as pf_file:
@@ -73,6 +78,14 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitc
         io_group_tile[it+1] = int(io_group)
 
         for io_channel in io_channels:
+            # P. Madigan 11/17 - Hack to allow for specifying geometry from a single network file
+            # assumes that io channel 1,2,3,4 -> tile number 1; io channel 5,6,7,8 -> tile number 2, ...
+            if single_network_file != False:
+                n_tiles_per_io_group = n_tiles // (len(nc_json['network'])-3)
+                io_group_tile[it+1] = int(it // n_tiles_per_io_group + 1)
+                if (int(io_channel)-1) // 4 + (io_group_tile[it+1]-1) * n_tiles_per_io_group != it:
+                    continue
+            
             nodes = io_channels[io_channel]['nodes']
             for node in nodes:
                 chip_id = node['chip_id']
@@ -111,14 +124,14 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitc
                       6:  [-304.31,-155.19, 155.19],
                       7:  [-304.31,-465.57,-155.19],
                       8:  [-304.31,-465.57, 155.19],
-                      9:  [ 304.31, 465.57,-155.19],
-                      10: [ 304.31, 465.57, 155.19],
-                      11: [ 304.31, 155.19,-155.19],
-                      12: [ 304.31, 155.19, 155.19],
-                      13: [ 304.31,-155.19,-155.19],
-                      14: [ 304.31,-155.19, 155.19],
-                      15: [ 304.31,-465.57,-155.19],
-                      16: [ 304.31,-465.57, 155.19]}
+                      9:  [ 304.31, 465.57, 155.19],
+                      10: [ 304.31, 465.57, -155.19],
+                      11: [ 304.31, 155.19, 155.19],
+                      12: [ 304.31, 155.19, -155.19],
+                      13: [ 304.31,-155.19, 155.19],
+                      14: [ 304.31,-155.19, -155.19],
+                      15: [ 304.31,-465.57, 155.19],
+                      16: [ 304.31,-465.57, -155.19]}
 
                              # z  y  x
     tile_orientations = {1:  [ 1,-1, 1],
@@ -137,6 +150,8 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitc
                          14: [-1, 1, 1],
                          15: [-1,-1,-1],
                          16: [-1, 1, 1]}
+
+    tpc_centers = {1: [0,0,0], 2: [0,0,0]}
 
     tile_chip_io_channel_io_group = {it:{} for it in range(1,n_tiles+1)}
 
@@ -171,6 +186,7 @@ def generate_layout(tile_layout_file, network_config_file, n_tiles=1, pixel_pitc
                    'tile_orientations': tile_orientations,
                    'tile_chip_to_io': tile_chip_io_channel_io_group,
                    'tile_indeces': tile_indeces,
+                   'tpc_centers': tpc_centers,
                    'chip_channel_to_position': chip_channel}, multi_tile_file)
 
 if __name__ == "__main__":
